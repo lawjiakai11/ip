@@ -1,5 +1,5 @@
 /**
- * The entry point for the Panda chatbot.
+ * The cool entry point for the Panda chatbot.
  */
 public class Panda {
     public static void main(String[] args) {
