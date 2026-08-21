@@ -34,8 +34,7 @@ public class Panda {
             if (command.equals("list")) {
                 System.out.println("Here are the tasks in your list:");
                 for (int i = 0; i < taskCount; i++) {
-                    System.out.println((i + 1) + ".[" + tasks[i].getStatusIcon() + "] "
-                            + tasks[i].getDescription());
+                    System.out.println((i + 1) + "." + tasks[i]);
                 }
             } else if (command.startsWith("mark ")) {
                 try {
@@ -43,7 +42,7 @@ public class Panda {
                     if (taskIndex >= 0 && taskIndex < taskCount) {
                         tasks[taskIndex].markAsDone();
                         System.out.println("Nice! I've marked this task as done:");
-                        System.out.println("  [X] " + tasks[taskIndex].getDescription());
+                        System.out.println("  " + tasks[taskIndex]);
                     } else {
                         System.out.println("That task number does not exist.");
                     }
@@ -56,7 +55,7 @@ public class Panda {
                     if (taskIndex >= 0 && taskIndex < taskCount) {
                         tasks[taskIndex].markAsNotDone();
                         System.out.println("OK, I've marked this task as not done yet:");
-                        System.out.println("  [ ] " + tasks[taskIndex].getDescription());
+                        System.out.println("  " + tasks[taskIndex]);
                     } else {
                         System.out.println("That task number does not exist.");
                     }
@@ -64,12 +63,57 @@ public class Panda {
                     System.out.println("Please specify a valid task number.");
                 }
             } else {
-                tasks[taskCount] = new Task(command);
-                taskCount++;
-                System.out.println("added: " + command);
+                Task task = createTask(command);
+                if (task == null) {
+                    System.out.println("I don't understand that command.");
+                } else if (taskCount >= tasks.length) {
+                    System.out.println("Your task list is full.");
+                } else {
+                    tasks[taskCount] = task;
+                    taskCount++;
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + task);
+                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                }
             }
 
             System.out.println("____________________________________________________________");
         }
+    }
+
+    private static Task createTask(String command) {
+        if (command.startsWith("todo ")) {
+            String description = command.substring(5).trim();
+            return description.isEmpty() ? null : new Todo(description);
+        }
+
+        if (command.startsWith("deadline ")) {
+            String details = command.substring(9);
+            int byIndex = details.indexOf(" /by ");
+            if (byIndex < 0) {
+                return null;
+            }
+
+            String description = details.substring(0, byIndex).trim();
+            String by = details.substring(byIndex + 5).trim();
+            return description.isEmpty() || by.isEmpty() ? null : new Deadline(description, by);
+        }
+
+        if (command.startsWith("event ")) {
+            String details = command.substring(6);
+            int fromIndex = details.indexOf(" /from ");
+            int toIndex = details.indexOf(" /to ", fromIndex + 7);
+            if (fromIndex < 0 || toIndex < 0) {
+                return null;
+            }
+
+            String description = details.substring(0, fromIndex).trim();
+            String from = details.substring(fromIndex + 7, toIndex).trim();
+            String to = details.substring(toIndex + 5).trim();
+            return description.isEmpty() || from.isEmpty() || to.isEmpty()
+                    ? null : new Event(description, from, to);
+        }
+
+        return null;
     }
 }

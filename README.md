@@ -20,30 +20,40 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    Hello! I'm Panda.
    What can I do for you?
    ____________________________________________________________
-   read book
+   todo read book
    ____________________________________________________________
-   added: read book
+   Got it. I've added this task:
+     [T][ ] read book
+   Now you have 1 tasks in the list.
    ____________________________________________________________
-   return book
+   deadline return book /by June 6th
    ____________________________________________________________
-   added: return book
+   Got it. I've added this task:
+     [D][ ] return book (by: June 6th)
+   Now you have 2 tasks in the list.
+   ____________________________________________________________
+   event project meeting /from Aug 6th 2pm /to 4pm
+   ____________________________________________________________
+   Got it. I've added this task:
+     [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+   Now you have 3 tasks in the list.
    ____________________________________________________________
    list
    ____________________________________________________________
    Here are the tasks in your list:
-   1.[ ] read book
-   2.[ ] return book
+   1.[T][ ] read book
+   2.[D][ ] return book (by: June 6th)
+   3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
    ____________________________________________________________
    mark 2
    ____________________________________________________________
    Nice! I've marked this task as done:
-     [X] return book
+     [D][X] return book (by: June 6th)
    ____________________________________________________________
-   list
+   unmark 2
    ____________________________________________________________
-   Here are the tasks in your list:
-   1.[ ] read book
-   2.[X] return book
+   OK, I've marked this task as not done yet:
+     [D][ ] return book (by: June 6th)
    ____________________________________________________________
    unmark 2
    ____________________________________________________________
