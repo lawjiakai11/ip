@@ -347,7 +347,95 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
-## Test Case 6: Mark and unmark a polymorphic task
+## Test Case 6: Delete tasks and preserve shifted indexes
+
+- Aim: Verify that deletion removes the selected task, renumbers later tasks, leaves state unchanged after an invalid delete, and allows subsequent commands to use the shifted index.
+
+### Input
+
+```text
+todo read book
+deadline return book /by Sunday
+event project meeting /from Monday 2pm /to 4pm
+list
+delete 2
+list
+delete 99
+list
+mark 2
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+PANDA
+Hello! I'm Panda.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: Sunday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [E][ ] project meeting (from: Monday 2pm to: 4pm)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[D][ ] return book (by: Sunday)
+3.[E][ ] project meeting (from: Monday 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [D][ ] return book (by: Sunday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[E][ ] project meeting (from: Monday 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+OOPS!!! That task number does not exist.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[E][ ] project meeting (from: Monday 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [E][X] project meeting (from: Monday 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[E][X] project meeting (from: Monday 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+    ( ) ( ) ( )
+      \ | /
+       \|/
+     .-----.
+    /       \
+   |   o o   |
+    \_______/
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## Test Case 7: Mark and unmark a polymorphic task
 
 - Aim: Verify that completion status changes work for a task stored through a `Task` reference.
 

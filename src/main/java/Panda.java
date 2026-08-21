@@ -1,14 +1,10 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
  * The cool entry point for the Panda chatbot.
  */
 public class Panda {
-    /**
-     * Starts Panda and processes commands until the user enters {@code bye}.
-     *
-     * @param args command-line arguments, which are not used
-     */
     public static void main(String[] args) {
         System.out.println("____________________________________________________________");
         System.out.println("PANDA");
@@ -16,8 +12,7 @@ public class Panda {
         System.out.println("What can I do for you?");
         System.out.println("____________________________________________________________");
 
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -39,30 +34,31 @@ public class Panda {
             try {
                 if (command.equals("list")) {
                     System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println((i + 1) + "." + tasks[i]);
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println((i + 1) + "." + tasks.get(i));
                     }
                 } else if (isCommand(command, "mark")) {
-                    int taskIndex = getTaskIndex(command, "mark", taskCount);
-                    tasks[taskIndex].markAsDone();
+                    int taskIndex = getTaskIndex(command, "mark", tasks.size());
+                    tasks.get(taskIndex).markAsDone();
                     System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("  " + tasks[taskIndex]);
+                    System.out.println("  " + tasks.get(taskIndex));
                 } else if (isCommand(command, "unmark")) {
-                    int taskIndex = getTaskIndex(command, "unmark", taskCount);
-                    tasks[taskIndex].markAsNotDone();
+                    int taskIndex = getTaskIndex(command, "unmark", tasks.size());
+                    tasks.get(taskIndex).markAsNotDone();
                     System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("  " + tasks[taskIndex]);
+                    System.out.println("  " + tasks.get(taskIndex));
+                } else if (isCommand(command, "delete")) {
+                    int taskIndex = getTaskIndex(command, "delete", tasks.size());
+                    Task deletedTask = tasks.remove(taskIndex);
+                    System.out.println("Noted. I've removed this task:");
+                    System.out.println("  " + deletedTask);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                 } else {
                     Task task = createTask(command);
-                    if (taskCount >= tasks.length) {
-                        throw new PandaException("OOPS!!! Your task list is full.");
-                    }
-
-                    tasks[taskCount] = task;
-                    taskCount++;
+                    tasks.add(task);
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + task);
-                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                 }
             } catch (PandaException e) {
                 System.out.println(e.getMessage());
@@ -72,13 +68,6 @@ public class Panda {
         }
     }
 
-    /**
-     * Parses a task command and creates its corresponding subtype.
-     *
-     * @param command the command entered by the user
-     * @return the newly created task
-     * @throws PandaException if the command is invalid or unknown
-     */
     private static Task createTask(String command) throws PandaException {
         if (isCommand(command, "todo")) {
             String description = getArguments(command, "todo");
@@ -137,38 +126,15 @@ public class Panda {
         throw new PandaException("OOPS!!! I'm sorry, but I don't know what that means :-(");
     }
 
-    /**
-     * Checks whether a command is exactly a command name or starts with that name and an argument.
-     *
-     * @param command the complete user command
-     * @param name the command name to check
-     * @return whether the command matches the name
-     */
     private static boolean isCommand(String command, String name) {
         return command.equals(name) || command.startsWith(name + " ");
     }
 
-    /**
-     * Extracts and trims the arguments after a command name.
-     *
-     * @param command the complete user command
-     * @param name the command name
-     * @return the command arguments, or an empty string when none were supplied
-     */
     private static String getArguments(String command, String name) {
         return command.length() == name.length()
                 ? "" : command.substring(name.length()).trim();
     }
 
-    /**
-     * Parses and validates a one-based task number for a status command.
-     *
-     * @param command the complete status command
-     * @param action the status action, such as {@code mark} or {@code unmark}
-     * @param taskCount the number of tasks currently stored
-     * @return the zero-based task index
-     * @throws PandaException if the task number is missing, invalid, or out of range
-     */
     private static int getTaskIndex(String command, String action, int taskCount)
             throws PandaException {
         String taskNumber = getArguments(command, action);
