@@ -1,27 +1,33 @@
 public class Task {
     protected String description;
-    protected boolean isDone;
+    protected TaskType type;
+    protected TaskStatus status;
 
     public Task(String description) {
+        this(description, TaskType.TODO);
+    }
+
+    protected Task(String description, TaskType type) {
         this.description = description;
-        this.isDone = false;
+        this.type = type;
+        this.status = TaskStatus.NOT_DONE;
     }
 
     public String getStatusIcon() {
-        return isDone ? "X" : " ";
+        return status.getIcon();
     }
 
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + type.getIcon() + "][" + getStatusIcon() + "] " + description;
     }
 
     public void markAsDone() {
-        isDone = true;
+        status = TaskStatus.DONE;
     }
 
     public void markAsNotDone() {
-        isDone = false;
+        status = TaskStatus.NOT_DONE;
     }
 
     public String getDescription() {

@@ -18,7 +18,8 @@ public class Panda {
             String command = scanner.nextLine();
             System.out.println("____________________________________________________________");
 
-            if (command.equals("bye")) {
+            CommandType commandType = getCommandType(command);
+            if (commandType == CommandType.BYE) {
                 System.out.println("    ( ) ( ) ( )");
                 System.out.println("      \\ | /");
                 System.out.println("       \\|/");
@@ -32,33 +33,44 @@ public class Panda {
             }
 
             try {
-                if (command.equals("list")) {
+                switch (commandType) {
+                case LIST:
                     System.out.println("Here are the tasks in your list:");
                     for (int i = 0; i < tasks.size(); i++) {
                         System.out.println((i + 1) + "." + tasks.get(i));
                     }
-                } else if (isCommand(command, "mark")) {
-                    int taskIndex = getTaskIndex(command, "mark", tasks.size());
-                    tasks.get(taskIndex).markAsDone();
+                    break;
+                case MARK:
+                    int markIndex = getTaskIndex(command, "mark", tasks.size());
+                    tasks.get(markIndex).markAsDone();
                     System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("  " + tasks.get(taskIndex));
-                } else if (isCommand(command, "unmark")) {
-                    int taskIndex = getTaskIndex(command, "unmark", tasks.size());
-                    tasks.get(taskIndex).markAsNotDone();
+                    System.out.println("  " + tasks.get(markIndex));
+                    break;
+                case UNMARK:
+                    int unmarkIndex = getTaskIndex(command, "unmark", tasks.size());
+                    tasks.get(unmarkIndex).markAsNotDone();
                     System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("  " + tasks.get(taskIndex));
-                } else if (isCommand(command, "delete")) {
-                    int taskIndex = getTaskIndex(command, "delete", tasks.size());
-                    Task deletedTask = tasks.remove(taskIndex);
+                    System.out.println("  " + tasks.get(unmarkIndex));
+                    break;
+                case DELETE:
+                    int deleteIndex = getTaskIndex(command, "delete", tasks.size());
+                    Task deletedTask = tasks.remove(deleteIndex);
                     System.out.println("Noted. I've removed this task:");
                     System.out.println("  " + deletedTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                } else {
+                    break;
+                case TODO:
+                case DEADLINE:
+                case EVENT:
                     Task task = createTask(command);
                     tasks.add(task);
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + task);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    break;
+                case UNKNOWN:
+                default:
+                    throw new PandaException(ErrorType.UNKNOWN_COMMAND);
                 }
             } catch (PandaException e) {
                 System.out.println(e.getMessage());
@@ -69,65 +81,86 @@ public class Panda {
     }
 
     private static Task createTask(String command) throws PandaException {
-        if (isCommand(command, "todo")) {
+        switch (getCommandType(command)) {
+        case TODO:
             String description = getArguments(command, "todo");
             if (description.isEmpty()) {
-                throw new PandaException("OOPS!!! The description of a todo cannot be empty.");
+                throw new PandaException(ErrorType.EMPTY_TODO_DESCRIPTION);
             }
             return new Todo(description);
-        }
-
-        if (isCommand(command, "deadline")) {
+        case DEADLINE:
             String details = getArguments(command, "deadline");
             if (details.isEmpty()) {
-                throw new PandaException("OOPS!!! The description of a deadline cannot be empty.");
+                throw new PandaException(ErrorType.EMPTY_DEADLINE_DESCRIPTION);
             }
 
             int byIndex = details.indexOf("/by");
             if (byIndex < 0) {
-                throw new PandaException("OOPS!!! A deadline must include a /by date.");
+                throw new PandaException(ErrorType.MISSING_DEADLINE_BY);
             }
 
-            String description = details.substring(0, byIndex).trim();
+            String deadlineDescription = details.substring(0, byIndex).trim();
             String by = details.substring(byIndex + 3).trim();
-            if (description.isEmpty()) {
-                throw new PandaException("OOPS!!! The description of a deadline cannot be empty.");
+            if (deadlineDescription.isEmpty()) {
+                throw new PandaException(ErrorType.EMPTY_DEADLINE_DESCRIPTION);
             }
             if (by.isEmpty()) {
-                throw new PandaException("OOPS!!! The /by date of a deadline cannot be empty.");
+                throw new PandaException(ErrorType.EMPTY_DEADLINE_BY);
             }
-            return new Deadline(description, by);
-        }
-
-        if (isCommand(command, "event")) {
-            String details = getArguments(command, "event");
-            if (details.isEmpty()) {
-                throw new PandaException("OOPS!!! The description of an event cannot be empty.");
+            return new Deadline(deadlineDescription, by);
+        case EVENT:
+            String eventDetails = getArguments(command, "event");
+            if (eventDetails.isEmpty()) {
+                throw new PandaException(ErrorType.EMPTY_EVENT_DESCRIPTION);
             }
 
-            int fromIndex = details.indexOf("/from");
-            int toIndex = details.indexOf("/to", fromIndex + 5);
+            int fromIndex = eventDetails.indexOf("/from");
+            int toIndex = eventDetails.indexOf("/to", fromIndex + 5);
             if (fromIndex < 0 || toIndex < 0) {
-                throw new PandaException("OOPS!!! An event must include /from and /to times.");
+                throw new PandaException(ErrorType.MISSING_EVENT_TIMES);
             }
 
-            String description = details.substring(0, fromIndex).trim();
-            String from = details.substring(fromIndex + 5, toIndex).trim();
-            String to = details.substring(toIndex + 3).trim();
-            if (description.isEmpty()) {
-                throw new PandaException("OOPS!!! The description of an event cannot be empty.");
+            String eventDescription = eventDetails.substring(0, fromIndex).trim();
+            String from = eventDetails.substring(fromIndex + 5, toIndex).trim();
+            String to = eventDetails.substring(toIndex + 3).trim();
+            if (eventDescription.isEmpty()) {
+                throw new PandaException(ErrorType.EMPTY_EVENT_DESCRIPTION);
             }
             if (from.isEmpty() || to.isEmpty()) {
-                throw new PandaException("OOPS!!! An event must include both a start and end time.");
+                throw new PandaException(ErrorType.EMPTY_EVENT_TIME);
             }
-            return new Event(description, from, to);
+            return new Event(eventDescription, from, to);
+        default:
+            throw new PandaException(ErrorType.UNKNOWN_COMMAND);
         }
-
-        throw new PandaException("OOPS!!! I'm sorry, but I don't know what that means :-(");
     }
 
-    private static boolean isCommand(String command, String name) {
-        return command.equals(name) || command.startsWith(name + " ");
+    private static CommandType getCommandType(String command) {
+        if (command.equals("todo") || command.startsWith("todo ")) {
+            return CommandType.TODO;
+        }
+        if (command.equals("deadline") || command.startsWith("deadline ")) {
+            return CommandType.DEADLINE;
+        }
+        if (command.equals("event") || command.startsWith("event ")) {
+            return CommandType.EVENT;
+        }
+        if (command.equals("list")) {
+            return CommandType.LIST;
+        }
+        if (command.equals("mark") || command.startsWith("mark ")) {
+            return CommandType.MARK;
+        }
+        if (command.equals("unmark") || command.startsWith("unmark ")) {
+            return CommandType.UNMARK;
+        }
+        if (command.equals("delete") || command.startsWith("delete ")) {
+            return CommandType.DELETE;
+        }
+        if (command.equals("bye")) {
+            return CommandType.BYE;
+        }
+        return CommandType.UNKNOWN;
     }
 
     private static String getArguments(String command, String name) {
@@ -139,18 +172,18 @@ public class Panda {
             throws PandaException {
         String taskNumber = getArguments(command, action);
         if (taskNumber.isEmpty()) {
-            throw new PandaException("OOPS!!! Please specify a task number to " + action + ".");
+            throw new PandaException(ErrorType.MISSING_TASK_NUMBER, action);
         }
 
         int taskIndex;
         try {
             taskIndex = Integer.parseInt(taskNumber) - 1;
         } catch (NumberFormatException e) {
-            throw new PandaException("OOPS!!! The task number must be a number.");
+            throw new PandaException(ErrorType.NON_NUMERIC_TASK_NUMBER);
         }
 
         if (taskIndex < 0 || taskIndex >= taskCount) {
-            throw new PandaException("OOPS!!! That task number does not exist.");
+            throw new PandaException(ErrorType.TASK_NOT_FOUND);
         }
         return taskIndex;
     }
