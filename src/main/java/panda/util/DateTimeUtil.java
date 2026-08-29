@@ -89,9 +89,9 @@ public final class DateTimeUtil {
     }
 
     /**
-     * Builds a formatter that rejects invalid date/time values rather than silently accepting them.
+     * Builds a formatter that rejects invalid date/time values instead of accepting them silently.
      *
-     * @param pattern the formatter pattern
+     * @param pattern the pattern to compile
      * @return a strict formatter for the given pattern
      */
     private static DateTimeFormatter strictFormat(String pattern) {
