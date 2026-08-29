@@ -8,61 +8,43 @@ import java.time.format.DateTimeParseException;
  */
 public class Panda {
     public static void main(String[] args) {
-        System.out.println("____________________________________________________________");
-        System.out.println("PANDA");
-        System.out.println("Hello! I'm Panda.");
-        System.out.println("What can I do for you?");
-        System.out.println("____________________________________________________________");
+        Ui ui = new Ui();
+        ui.showWelcome();
 
         ArrayList<Task> tasks = Storage.loadTasks();
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine().trim();
-            System.out.println("____________________________________________________________");
+            ui.showDivider();
 
             CommandType commandType = getCommandType(command);
             if (commandType == CommandType.BYE) {
-                System.out.println("    ( ) ( ) ( )");
-                System.out.println("      \\ | /");
-                System.out.println("       \\|/");
-                System.out.println("     .-----.");
-                System.out.println("    /       \\");
-                System.out.println("   |   o o   |");
-                System.out.println("    \\_______/");
-                System.out.println("Bye. Hope to see you again soon!");
-                System.out.println("____________________________________________________________");
+                ui.showBye();
                 break;
             }
 
             try {
                 switch (commandType) {
                 case LIST:
-                    System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < tasks.size(); i++) {
-                        System.out.println((i + 1) + "." + tasks.get(i));
-                    }
+                    ui.showTaskList(tasks);
                     break;
                 case MARK:
                     int markIndex = getTaskIndex(command, "mark", tasks.size());
                     tasks.get(markIndex).markAsDone();
                     Storage.saveTasks(tasks);
-                    System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("  " + tasks.get(markIndex));
+                    ui.showTaskMarked(tasks.get(markIndex));
                     break;
                 case UNMARK:
                     int unmarkIndex = getTaskIndex(command, "unmark", tasks.size());
                     tasks.get(unmarkIndex).markAsNotDone();
                     Storage.saveTasks(tasks);
-                    System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("  " + tasks.get(unmarkIndex));
+                    ui.showTaskUnmarked(tasks.get(unmarkIndex));
                     break;
                 case DELETE:
                     int deleteIndex = getTaskIndex(command, "delete", tasks.size());
                     Task deletedTask = tasks.remove(deleteIndex);
                     Storage.saveTasks(tasks);
-                    System.out.println("Noted. I've removed this task:");
-                    System.out.println("  " + deletedTask);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    ui.showTaskDeleted(deletedTask, tasks.size());
                     break;
                 case TODO:
                 case DEADLINE:
@@ -70,19 +52,17 @@ public class Panda {
                     Task task = createTask(command);
                     tasks.add(task);
                     Storage.saveTasks(tasks);
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + task);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    ui.showTaskAdded(task, tasks.size());
                     break;
                 case UNKNOWN:
                 default:
                     throw new PandaException(ErrorType.UNKNOWN_COMMAND);
                 }
             } catch (PandaException e) {
-                System.out.println(e.getMessage());
+                ui.showError(e);
             }
 
-            System.out.println("____________________________________________________________");
+            ui.showDivider();
         }
     }
 
