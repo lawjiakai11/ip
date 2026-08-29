@@ -11,7 +11,7 @@ public class Panda {
         Ui ui = new Ui();
         ui.showWelcome();
 
-        ArrayList<Task> tasks = Storage.loadTasks();
+        TaskList tasks = new TaskList(Storage.loadTasks());
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine().trim();
@@ -26,24 +26,24 @@ public class Panda {
             try {
                 switch (commandType) {
                 case LIST:
-                    ui.showTaskList(tasks);
+                    ui.showTaskList(tasks.asList());
                     break;
                 case MARK:
                     int markIndex = getTaskIndex(command, "mark", tasks.size());
-                    tasks.get(markIndex).markAsDone();
-                    Storage.saveTasks(tasks);
-                    ui.showTaskMarked(tasks.get(markIndex));
+                    Task markedTask = tasks.markTask(markIndex);
+                    Storage.saveTasks(tasks.asList());
+                    ui.showTaskMarked(markedTask);
                     break;
                 case UNMARK:
                     int unmarkIndex = getTaskIndex(command, "unmark", tasks.size());
-                    tasks.get(unmarkIndex).markAsNotDone();
-                    Storage.saveTasks(tasks);
-                    ui.showTaskUnmarked(tasks.get(unmarkIndex));
+                    Task unmarkedTask = tasks.unmarkTask(unmarkIndex);
+                    Storage.saveTasks(tasks.asList());
+                    ui.showTaskUnmarked(unmarkedTask);
                     break;
                 case DELETE:
                     int deleteIndex = getTaskIndex(command, "delete", tasks.size());
                     Task deletedTask = tasks.remove(deleteIndex);
-                    Storage.saveTasks(tasks);
+                    Storage.saveTasks(tasks.asList());
                     ui.showTaskDeleted(deletedTask, tasks.size());
                     break;
                 case TODO:
@@ -51,7 +51,7 @@ public class Panda {
                 case EVENT:
                     Task task = createTask(command);
                     tasks.add(task);
-                    Storage.saveTasks(tasks);
+                    Storage.saveTasks(tasks.asList());
                     ui.showTaskAdded(task, tasks.size());
                     break;
                 case UNKNOWN:
