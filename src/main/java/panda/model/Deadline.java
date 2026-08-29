@@ -7,11 +7,23 @@ import panda.util.DateTimeUtil;
 public class Deadline extends Task {
     protected LocalDateTime by;
 
+    /**
+     * Creates a deadline task with a parsed date/time value.
+     *
+     * @param description task description
+     * @param by deadline date and time
+     */
     public Deadline(String description, LocalDateTime by) {
         super(description, TaskType.DEADLINE);
         this.by = by;
     }
 
+    /**
+     * Creates a deadline task from a user-supplied date/time string.
+     *
+     * @param description task description
+     * @param by deadline text to parse
+     */
     public Deadline(String description, String by) {
         this(description, DateTimeUtil.parse(by));
     }

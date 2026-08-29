@@ -8,12 +8,26 @@ public class Event extends Task {
     protected LocalDateTime from;
     protected LocalDateTime to;
 
+    /**
+     * Creates an event task with explicit start and end times.
+     *
+     * @param description task description
+     * @param from event start time
+     * @param to event end time
+     */
     public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description, TaskType.EVENT);
         this.from = from;
         this.to = to;
     }
 
+    /**
+     * Creates an event from user-entered start and end date/time strings.
+     *
+     * @param description task description
+     * @param from event start date/time text
+     * @param to event end date/time text
+     */
     public Event(String description, String from, String to) {
         this(description, DateTimeUtil.parse(from), DateTimeUtil.parse(to));
     }

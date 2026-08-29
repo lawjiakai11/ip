@@ -88,6 +88,12 @@ public final class DateTimeUtil {
         return value.format(STORAGE_FORMAT);
     }
 
+    /**
+     * Builds a formatter that rejects invalid date/time values rather than silently accepting them.
+     *
+     * @param pattern the formatter pattern
+     * @return a strict formatter for the given pattern
+     */
     private static DateTimeFormatter strictFormat(String pattern) {
         return DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH)
                 .withResolverStyle(ResolverStyle.STRICT);

@@ -15,6 +15,11 @@ import panda.ui.Ui;
  * The cool entry point for the Panda chatbot.
  */
 public class Panda {
+    /**
+     * Runs the Panda command-line assistant.
+     *
+     * @param args command-line arguments; currently unused
+     */
     public static void main(String[] args) {
         Ui ui = new Ui();
         ui.showWelcome();
