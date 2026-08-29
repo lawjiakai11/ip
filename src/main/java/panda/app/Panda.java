@@ -54,6 +54,13 @@ public class Panda {
                     Storage.saveTasks(tasks.asList());
                     ui.showTaskDeleted(deletedTask, tasks.size());
                     break;
+                case FIND:
+                    String keyword = Parser.getArguments(command, "find");
+                    if (keyword.isEmpty()) {
+                        throw new PandaException(ErrorType.EMPTY_FIND_KEYWORD);
+                    }
+                    ui.showMatchingTasks(tasks.find(keyword));
+                    break;
                 case TODO:
                 case DEADLINE:
                 case EVENT:

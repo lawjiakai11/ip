@@ -486,7 +486,72 @@ Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
 
-## Test Case 8: Persist changes to the task list
+## Test Case 8: Search for tasks by keyword
+
+- Aim: Verify that the `find` command lists tasks whose descriptions contain the given keyword, case-insensitively, and rejects an empty keyword.
+
+### Input
+
+```text
+todo read book
+deadline return book /by 2019-10-20
+todo buy milk
+find book
+find
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+PANDA
+Hello! I'm Panda.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: Oct 20 2019)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] buy milk
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the matching tasks in your list:
+1.[T][ ] read book
+2.[D][ ] return book (by: Oct 20 2019)
+____________________________________________________________
+____________________________________________________________
+OOPS!!! The keyword to find cannot be empty.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
+2.[D][ ] return book (by: Oct 20 2019)
+3.[T][ ] buy milk
+____________________________________________________________
+____________________________________________________________
+    ( ) ( ) ( )
+      \ | /
+       \|/
+     .-----.
+    /       \
+   |   o o   |
+    \_______/
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## Test Case 9: Persist changes to the task list
 
 - Aim: Exercise additions, completion changes, and deletion so the current task list is saved after every change.
 
