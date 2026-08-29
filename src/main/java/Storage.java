@@ -43,7 +43,13 @@ public class Storage {
 
         try {
             for (String taskLine : Files.readAllLines(SAVE_FILE)) {
-                tasks.add(createTask(taskLine));
+                if (!taskLine.isBlank()) {
+                    try {
+                        tasks.add(createTask(taskLine));
+                    } catch (RuntimeException ignored) {
+                        // Ignore malformed records and keep loading valid tasks.
+                    }
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException("Unable to load tasks from " + SAVE_FILE, e);
@@ -58,16 +64,28 @@ public class Storage {
      * @return the recreated task
      */
     private static Task createTask(String taskLine) {
-        String[] taskDetails = taskLine.split(" \\| ");
+        String[] taskDetails = taskLine.split("\\s*\\|\\s*", -1);
+        if (taskDetails.length < 3 || taskDetails[1].isBlank() || taskDetails[2].isBlank()) {
+            throw new IllegalArgumentException("Malformed task record");
+        }
         Task task;
         switch (taskDetails[0]) {
         case "T":
+            if (taskDetails.length != 3) {
+                throw new IllegalArgumentException("Malformed todo record");
+            }
             task = new Todo(taskDetails[2]);
             break;
         case "D":
+            if (taskDetails.length != 4 || taskDetails[3].isBlank()) {
+                throw new IllegalArgumentException("Malformed deadline record");
+            }
             task = new Deadline(taskDetails[2], taskDetails[3]);
             break;
         case "E":
+            if (taskDetails.length != 5 || taskDetails[3].isBlank() || taskDetails[4].isBlank()) {
+                throw new IllegalArgumentException("Malformed event record");
+            }
             task = new Event(taskDetails[2], taskDetails[3], taskDetails[4]);
             break;
         default:
@@ -76,6 +94,8 @@ public class Storage {
 
         if (taskDetails[1].equals("1")) {
             task.markAsDone();
+        } else if (!taskDetails[1].equals("0")) {
+            throw new IllegalArgumentException("Malformed task status");
         }
         return task;
     }

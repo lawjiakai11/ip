@@ -125,13 +125,13 @@ ____________________________________________________________
 
 ## Test Case 3: Add deadline and event tasks
 
-- Aim: Verify that deadline and event commands create the correct `Task` subclasses and preserve their date/time strings.
+- Aim: Verify that deadline and event commands parse typed date/time values and display them in Panda's readable format.
 
 ### Input
 
 ```text
-deadline submit report /by Friday 5pm
-event team meeting /from Monday 2pm /to 4pm
+deadline submit report /by 2/12/2019 1800
+event team meeting /from 2019-10-16 1400 /to 2019-10-16 1600
 list
 bye
 ```
@@ -146,18 +146,18 @@ What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] submit report (by: Friday 5pm)
+  [D][ ] submit report (by: Dec 02 2019 6:00 PM)
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [E][ ] team meeting (from: Monday 2pm to: 4pm)
+  [E][ ] team meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
-1.[D][ ] submit report (by: Friday 5pm)
-2.[E][ ] team meeting (from: Monday 2pm to: 4pm)
+1.[D][ ] submit report (by: Dec 02 2019 6:00 PM)
+2.[E][ ] team meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
     ( ) ( ) ( )
@@ -181,10 +181,10 @@ ____________________________________________________________
 todo read book
 todo
 list
-deadline return book /by Sunday
+deadline return book /by 2019-10-20
 deadline return book
 list
-event project meeting /from Monday 2pm /to 4pm
+event project meeting /from 2019-10-16 1400 /to 2019-10-16 1600
 event project meeting /from Monday 2pm /to
 list
 mark 2
@@ -218,7 +218,7 @@ Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 20 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -227,11 +227,11 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read book
-2.[D][ ] return book (by: Sunday)
+2.[D][ ] return book (by: Oct 20 2019)
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [E][ ] project meeting (from: Monday 2pm to: 4pm)
+  [E][ ] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -240,12 +240,12 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read book
-2.[D][ ] return book (by: Sunday)
-3.[E][ ] project meeting (from: Monday 2pm to: 4pm)
+2.[D][ ] return book (by: Oct 20 2019)
+3.[E][ ] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
-  [D][X] return book (by: Sunday)
+  [D][X] return book (by: Oct 20 2019)
 ____________________________________________________________
 ____________________________________________________________
 OOPS!!! That task number does not exist.
@@ -253,12 +253,12 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read book
-2.[D][X] return book (by: Sunday)
-3.[E][ ] project meeting (from: Monday 2pm to: 4pm)
+2.[D][X] return book (by: Oct 20 2019)
+3.[E][ ] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
 OK, I've marked this task as not done yet:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 20 2019)
 ____________________________________________________________
 ____________________________________________________________
 OOPS!!! That task number does not exist.
@@ -266,8 +266,8 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read book
-2.[D][ ] return book (by: Sunday)
-3.[E][ ] project meeting (from: Monday 2pm to: 4pm)
+2.[D][ ] return book (by: Oct 20 2019)
+3.[E][ ] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
     ( ) ( ) ( )
@@ -355,8 +355,8 @@ ____________________________________________________________
 
 ```text
 todo read book
-deadline return book /by Sunday
-event project meeting /from Monday 2pm /to 4pm
+deadline return book /by 2019-10-20
+event project meeting /from 2019-10-16 1400 /to 2019-10-16 1600
 list
 delete 2
 list
@@ -382,29 +382,29 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 20 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [E][ ] project meeting (from: Monday 2pm to: 4pm)
+  [E][ ] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read book
-2.[D][ ] return book (by: Sunday)
-3.[E][ ] project meeting (from: Monday 2pm to: 4pm)
+2.[D][ ] return book (by: Oct 20 2019)
+3.[E][ ] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 20 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read book
-2.[E][ ] project meeting (from: Monday 2pm to: 4pm)
+2.[E][ ] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
 OOPS!!! That task number does not exist.
@@ -412,16 +412,16 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read book
-2.[E][ ] project meeting (from: Monday 2pm to: 4pm)
+2.[E][ ] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
-  [E][X] project meeting (from: Monday 2pm to: 4pm)
+  [E][X] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][ ] read book
-2.[E][X] project meeting (from: Monday 2pm to: 4pm)
+2.[E][X] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
 ____________________________________________________________
 ____________________________________________________________
     ( ) ( ) ( )
@@ -442,7 +442,7 @@ ____________________________________________________________
 ### Input
 
 ```text
-deadline return book /by Sunday
+deadline return book /by 2019-10-20
 mark 1
 unmark 1
 list
@@ -459,20 +459,20 @@ What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 20 2019)
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
-  [D][X] return book (by: Sunday)
+  [D][X] return book (by: Oct 20 2019)
 ____________________________________________________________
 ____________________________________________________________
 OK, I've marked this task as not done yet:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 20 2019)
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
-1.[D][ ] return book (by: Sunday)
+1.[D][ ] return book (by: Oct 20 2019)
 ____________________________________________________________
 ____________________________________________________________
     ( ) ( ) ( )
@@ -494,7 +494,7 @@ ____________________________________________________________
 
 ```text
 todo read book
-deadline return book /by Sunday
+deadline return book /by 2019-10-20
 mark 2
 unmark 2
 delete 1
@@ -516,16 +516,16 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 20 2019)
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Nice! I've marked this task as done:
-  [D][X] return book (by: Sunday)
+  [D][X] return book (by: Oct 20 2019)
 ____________________________________________________________
 ____________________________________________________________
 OK, I've marked this task as not done yet:
-  [D][ ] return book (by: Sunday)
+  [D][ ] return book (by: Oct 20 2019)
 ____________________________________________________________
 ____________________________________________________________
 Noted. I've removed this task:
@@ -552,8 +552,8 @@ ____________________________________________________________
 
 ```text
 T | 1 | read book
-D | 0 | return book | Sunday
-E | 1 | project meeting | Monday 2pm | 4pm
+D | 0 | return book | 2019-10-20T00:00:00
+E | 1 | project meeting | 2019-10-16T14:00:00 | 2019-10-16T16:00:00
 ```
 
 ### Input
@@ -574,8 +574,54 @@ ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
 1.[T][X] read book
-2.[D][ ] return book (by: Sunday)
-3.[E][X] project meeting (from: Monday 2pm to: 4pm)
+2.[D][ ] return book (by: Oct 20 2019)
+3.[E][X] project meeting (from: Oct 16 2019 2:00 PM to: Oct 16 2019 4:00 PM)
+____________________________________________________________
+____________________________________________________________
+    ( ) ( ) ( )
+      \ | /
+       \|/
+     .-----.
+    /       \
+   |   o o   |
+    \_______/
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## Test Case 10: Reject impossible and reversed date/times
+
+- Aim: Verify that impossible calendar dates, invalid clock values, and event end times before their starts are rejected without changing the task list.
+
+### Input
+
+```text
+deadline leap day /by 2019-02-29
+deadline bad clock /by 2019-10-15 2560
+event reversed /from 2019-10-16 1800 /to 2019-10-16 1700
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+PANDA
+Hello! I'm Panda.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+OOPS!!! Please enter a valid date/time, such as 2019-10-15 or 2/12/2019 1800.
+____________________________________________________________
+____________________________________________________________
+OOPS!!! Please enter a valid date/time, such as 2019-10-15 or 2/12/2019 1800.
+____________________________________________________________
+____________________________________________________________
+OOPS!!! An event's end date/time cannot be before its start date/time.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
     ( ) ( ) ( )

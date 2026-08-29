@@ -1,14 +1,29 @@
-public class Deadline extends Task {
-    protected String by;
+import java.time.LocalDateTime;
 
-    public Deadline(String description, String by) {
+public class Deadline extends Task {
+    protected LocalDateTime by;
+
+    public Deadline(String description, LocalDateTime by) {
         super(description, TaskType.DEADLINE);
         this.by = by;
     }
 
+    public Deadline(String description, String by) {
+        this(description, DateTimeUtil.parse(by));
+    }
+
+    /**
+     * Returns the deadline date/time.
+     *
+     * @return deadline date/time
+     */
+    public LocalDateTime getBy() {
+        return by;
+    }
+
     @Override
     public String toString() {
-        return super.toString() + " (by: " + by + ")";
+        return super.toString() + " (by: " + DateTimeUtil.formatForDisplay(by) + ")";
     }
 
     /**
@@ -18,6 +33,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileString() {
-        return super.toFileString() + " | " + by;
+        return super.toFileString() + " | " + DateTimeUtil.formatForStorage(by);
     }
 }

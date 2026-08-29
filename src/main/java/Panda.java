@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 /**
  * The cool entry point for the Panda chatbot.
@@ -15,7 +17,7 @@ public class Panda {
         ArrayList<Task> tasks = Storage.loadTasks();
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().trim();
             System.out.println("____________________________________________________________");
 
             CommandType commandType = getCommandType(command);
@@ -98,7 +100,7 @@ public class Panda {
                 throw new PandaException(ErrorType.EMPTY_DEADLINE_DESCRIPTION);
             }
 
-            int byIndex = details.indexOf("/by");
+            int byIndex = findMarker(details, "/by");
             if (byIndex < 0) {
                 throw new PandaException(ErrorType.MISSING_DEADLINE_BY);
             }
@@ -111,15 +113,15 @@ public class Panda {
             if (by.isEmpty()) {
                 throw new PandaException(ErrorType.EMPTY_DEADLINE_BY);
             }
-            return new Deadline(deadlineDescription, by);
+            return new Deadline(deadlineDescription, parseDateTime(by));
         case EVENT:
             String eventDetails = getArguments(command, "event");
             if (eventDetails.isEmpty()) {
                 throw new PandaException(ErrorType.EMPTY_EVENT_DESCRIPTION);
             }
 
-            int fromIndex = eventDetails.indexOf("/from");
-            int toIndex = eventDetails.indexOf("/to", fromIndex + 5);
+            int fromIndex = findMarker(eventDetails, "/from");
+            int toIndex = findMarker(eventDetails, "/to", Math.max(0, fromIndex + 5));
             if (fromIndex < 0 || toIndex < 0) {
                 throw new PandaException(ErrorType.MISSING_EVENT_TIMES);
             }
@@ -133,10 +135,42 @@ public class Panda {
             if (from.isEmpty() || to.isEmpty()) {
                 throw new PandaException(ErrorType.EMPTY_EVENT_TIME);
             }
-            return new Event(eventDescription, from, to);
+            LocalDateTime eventStart = parseDateTime(from);
+            LocalDateTime eventEnd = parseDateTime(to);
+            if (eventEnd.isBefore(eventStart)) {
+                throw new PandaException(ErrorType.EVENT_END_BEFORE_START);
+            }
+            return new Event(eventDescription, eventStart, eventEnd);
         default:
             throw new PandaException(ErrorType.UNKNOWN_COMMAND);
         }
+    }
+
+    private static LocalDateTime parseDateTime(String value) throws PandaException {
+        try {
+            return DateTimeUtil.parse(value);
+        } catch (DateTimeParseException e) {
+            throw new PandaException(ErrorType.INVALID_DATE_TIME);
+        }
+    }
+
+    private static int findMarker(String text, String marker) {
+        return findMarker(text, marker, 0);
+    }
+
+    private static int findMarker(String text, String marker, int startIndex) {
+        int index = text.indexOf(marker, startIndex);
+        while (index >= 0) {
+            int markerEnd = index + marker.length();
+            boolean hasBoundaryBefore = index == 0 || Character.isWhitespace(text.charAt(index - 1));
+            boolean hasBoundaryAfter = markerEnd == text.length()
+                    || Character.isWhitespace(text.charAt(markerEnd));
+            if (hasBoundaryBefore && hasBoundaryAfter) {
+                return index;
+            }
+            index = text.indexOf(marker, markerEnd);
+        }
+        return -1;
     }
 
     private static CommandType getCommandType(String command) {
