@@ -56,6 +56,29 @@ class TaskListTest {
     }
 
     @Test
+    void find_keyword_returnsMatchingTasksIgnoreCase() {
+        Todo first = new Todo("read book");
+        Deadline second = new Deadline("return book", "2019-10-20");
+        Todo third = new Todo("buy milk");
+        TaskList taskList = new TaskList(List.of(first, second, third));
+
+        List<Task> matches = taskList.find("BOOK");
+
+        assertEquals(2, matches.size());
+        assertSame(first, matches.get(0));
+        assertSame(second, matches.get(1));
+    }
+
+    @Test
+    void find_keyword_noMatches_returnsEmptyList() {
+        TaskList taskList = new TaskList(List.of(new Todo("read book")));
+
+        List<Task> matches = taskList.find("grocery");
+
+        assertEquals(0, matches.size());
+    }
+
+    @Test
     void remove_validIndex_returnsRemovedTaskAndUpdatesList() {
         Todo first = new Todo("read book");
         Todo second = new Todo("submit report");

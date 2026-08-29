@@ -13,6 +13,7 @@ public enum ErrorType {
     MISSING_EVENT_TIMES("OOPS!!! An event must include /from and /to times."),
     EMPTY_EVENT_TIME("OOPS!!! An event must include both a start and end time."),
     EVENT_END_BEFORE_START("OOPS!!! An event's end date/time cannot be before its start date/time."),
+    EMPTY_FIND_KEYWORD("OOPS!!! The keyword to find cannot be empty."),
     UNKNOWN_COMMAND("OOPS!!! I'm sorry, but I don't know what that means :-("),
     MISSING_TASK_NUMBER("OOPS!!! Please specify a task number to %s."),
     NON_NUMERIC_TASK_NUMBER("OOPS!!! The task number must be a number."),

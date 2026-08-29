@@ -44,6 +44,9 @@ public class Parser {
         if (command.equals("delete") || command.startsWith("delete ")) {
             return CommandType.DELETE;
         }
+        if (command.equals("find") || command.startsWith("find ")) {
+            return CommandType.FIND;
+        }
         if (command.equals("bye")) {
             return CommandType.BYE;
         }

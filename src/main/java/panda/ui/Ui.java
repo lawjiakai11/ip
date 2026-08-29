@@ -72,6 +72,14 @@ public class Ui {
         System.out.println("Now you have " + taskCount + " tasks in the list.");
     }
 
+    /** Displays the tasks that match a search keyword. */
+    public void showMatchingTasks(List<Task> tasks) {
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + "." + tasks.get(i));
+        }
+    }
+
     /** Displays a Panda-style command error. */
     public void showError(PandaException exception) {
         System.out.println(exception.getMessage());
