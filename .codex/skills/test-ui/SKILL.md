@@ -24,3 +24,5 @@ Use this skill when the user asks to run or update the project's console UI test
 Do not modify application source code merely to make a test pass. If a test fails, report the mismatch and ask whether the user wants the implementation or the test plan corrected.
 
 The test plan is the maintained record of UI coverage. Keep expected output synchronized with intentional user-visible changes.
+
+Maintain the project's JUnit coverage target of roughly 50% across the highest-value methods. After every code change, review and update the JUnit tests in `src/test/java` so that changing logic remains covered and the target is still met.

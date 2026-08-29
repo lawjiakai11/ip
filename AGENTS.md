@@ -34,6 +34,12 @@ Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
 
+## JUnit coverage target
+
+Aim to maintain JUnit coverage of roughly 50% across the highest-value methods in the codebase. Prioritize complex, core, and critical business logic when deciding what to test, rather than low-value getters or trivial formatting wrappers.
+
+After every code change, review the existing JUnit tests in `src/test/java` and update them as needed to keep coverage aligned with the current implementation. If a code change alters behavior, adds a branch, or modifies a core method, add or revise JUnit tests before considering the change complete. Do not leave the project below the target coverage expectation for the affected area.
+
 ## UI testing after code updates
 
 After every code update, review `test/ui-test-plan.md` and update it when the change adds or alters user-visible behavior or test coverage. Keep existing test cases unless they are intentionally obsolete; never change expected output merely to conceal a regression.
