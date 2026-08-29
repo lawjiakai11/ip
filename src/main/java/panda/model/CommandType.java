@@ -1,3 +1,5 @@
+package panda.model;
+
 /**
  * Commands that Panda can recognize from user input.
  */

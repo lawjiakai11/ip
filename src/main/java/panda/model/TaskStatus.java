@@ -1,3 +1,5 @@
+package panda.model;
+
 /**
  * Completion states available for a task.
  */

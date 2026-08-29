@@ -1,4 +1,15 @@
+package panda.app;
+
 import java.util.Scanner;
+
+import panda.exception.ErrorType;
+import panda.exception.PandaException;
+import panda.model.CommandType;
+import panda.model.Task;
+import panda.model.TaskList;
+import panda.parser.Parser;
+import panda.storage.Storage;
+import panda.ui.Ui;
 
 /**
  * The cool entry point for the Panda chatbot.

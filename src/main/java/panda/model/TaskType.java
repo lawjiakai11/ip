@@ -1,3 +1,5 @@
+package panda.model;
+
 /**
  * The kinds of tasks supported by Panda.
  */

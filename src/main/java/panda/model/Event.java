@@ -1,4 +1,8 @@
+package panda.model;
+
 import java.time.LocalDateTime;
+
+import panda.util.DateTimeUtil;
 
 public class Event extends Task {
     protected LocalDateTime from;

@@ -1,3 +1,5 @@
+package panda.exception;
+
 /**
  * User-input errors that Panda can report.
  */

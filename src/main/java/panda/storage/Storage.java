@@ -1,8 +1,15 @@
+package panda.storage;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import panda.model.Deadline;
+import panda.model.Event;
+import panda.model.Task;
+import panda.model.Todo;
 
 /**
  * Saves Panda's task list to a fixed file on disk.

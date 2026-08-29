@@ -1,3 +1,5 @@
+package panda.exception;
+
 /**
  * Represents an expected input or command error reported by Panda.
  */

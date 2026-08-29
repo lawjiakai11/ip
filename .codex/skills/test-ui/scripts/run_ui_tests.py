@@ -104,7 +104,7 @@ def check_java_version() -> None:
 def compile_project(project_root: Path, build_dir: Path) -> None:
     """Compile all Java source files into a temporary build directory."""
 
-    source_files = sorted((project_root / "src/main/java").glob("*.java"))
+    source_files = sorted((project_root / "src/main/java").rglob("*.java"))
     if not source_files:
         raise RuntimeError("no Java source files found in src/main/java")
 
@@ -133,7 +133,7 @@ def run_test_case(test_case: TestCase, project_root: Path, build_dir: Path) -> b
     input_text = normalize_line_endings(test_case.input_text)
     expected_output = normalize_line_endings(test_case.expected_output)
     result = subprocess.run(
-        ["java", "-cp", str(build_dir), "Panda"],
+        ["java", "-cp", str(build_dir), "panda.app.Panda"],
         cwd=project_root,
         input=input_text,
         capture_output=True,

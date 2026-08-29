@@ -1,3 +1,5 @@
+package panda.model;
+
 /**
  * Represents a task in Panda's task list.
  */
