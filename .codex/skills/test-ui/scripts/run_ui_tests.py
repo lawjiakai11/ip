@@ -20,6 +20,7 @@ class TestCase:
     aim: str
     input_text: str
     expected_output: str
+    initial_data: str | None = None
 
 
 def normalize_line_endings(value: str) -> str:
@@ -38,6 +39,17 @@ def fenced_block(section: str, heading: str) -> str:
 
     block = match.group(1)
     return block + "\n" if block else ""
+
+
+def optional_fenced_block(section: str, heading: str) -> str | None:
+    """Extract an optional fenced text block following a section heading."""
+
+    pattern = rf"###\s+{re.escape(heading)}\s*\n\s*```[^\n]*\n(.*?)\n\s*```"
+    match = re.search(pattern, section, re.DOTALL | re.IGNORECASE)
+    if match is None:
+        return None
+
+    return match.group(1) + "\n" if match.group(1) else ""
 
 
 def read_plan(plan_path: Path) -> list[TestCase]:
@@ -62,6 +74,7 @@ def read_plan(plan_path: Path) -> list[TestCase]:
                 aim=aim_match.group(1).strip(),
                 input_text=fenced_block(section, "Input"),
                 expected_output=fenced_block(section, "Expected output"),
+                initial_data=optional_fenced_block(section, "Initial data"),
             )
         )
 
@@ -110,6 +123,12 @@ def compile_project(project_root: Path, build_dir: Path) -> None:
 
 def run_test_case(test_case: TestCase, project_root: Path, build_dir: Path) -> bool:
     """Run one test case, print its session, and return whether it passed."""
+
+    data_file = project_root / "data" / "panda.txt"
+    data_file.unlink(missing_ok=True)
+    if test_case.initial_data is not None:
+        data_file.parent.mkdir(parents=True, exist_ok=True)
+        data_file.write_text(normalize_line_endings(test_case.initial_data), encoding="utf-8")
 
     input_text = normalize_line_endings(test_case.input_text)
     expected_output = normalize_line_endings(test_case.expected_output)
@@ -164,6 +183,8 @@ def main() -> int:
     except (OSError, ValueError, RuntimeError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 1
+    finally:
+        (project_root / "data" / "panda.txt").unlink(missing_ok=True)
 
     print(f"\nAll {len(test_cases)} UI test case(s) passed.")
     return 0

@@ -485,3 +485,106 @@ ____________________________________________________________
 Bye. Hope to see you again soon!
 ____________________________________________________________
 ```
+
+## Test Case 8: Persist changes to the task list
+
+- Aim: Exercise additions, completion changes, and deletion so the current task list is saved after every change.
+
+### Input
+
+```text
+todo read book
+deadline return book /by Sunday
+mark 2
+unmark 2
+delete 1
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+PANDA
+Hello! I'm Panda.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [D][ ] return book (by: Sunday)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done:
+  [D][X] return book (by: Sunday)
+____________________________________________________________
+____________________________________________________________
+OK, I've marked this task as not done yet:
+  [D][ ] return book (by: Sunday)
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+    ( ) ( ) ( )
+      \ | /
+       \|/
+     .-----.
+    /       \
+   |   o o   |
+    \_______/
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## Test Case 9: Load saved tasks at startup
+
+- Aim: Verify that Panda recreates todo, deadline, and event tasks—including their completion statuses—from the save file when a new session starts.
+
+### Initial data
+
+```text
+T | 1 | read book
+D | 0 | return book | Sunday
+E | 1 | project meeting | Monday 2pm | 4pm
+```
+
+### Input
+
+```text
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+PANDA
+Hello! I'm Panda.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][X] read book
+2.[D][ ] return book (by: Sunday)
+3.[E][X] project meeting (from: Monday 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+    ( ) ( ) ( )
+      \ | /
+       \|/
+     .-----.
+    /       \
+   |   o o   |
+    \_______/
+Bye. Hope to see you again soon!
+____________________________________________________________
+```

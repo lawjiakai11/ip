@@ -12,7 +12,7 @@ public class Panda {
         System.out.println("What can I do for you?");
         System.out.println("____________________________________________________________");
 
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = Storage.loadTasks();
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -43,18 +43,21 @@ public class Panda {
                 case MARK:
                     int markIndex = getTaskIndex(command, "mark", tasks.size());
                     tasks.get(markIndex).markAsDone();
+                    Storage.saveTasks(tasks);
                     System.out.println("Nice! I've marked this task as done:");
                     System.out.println("  " + tasks.get(markIndex));
                     break;
                 case UNMARK:
                     int unmarkIndex = getTaskIndex(command, "unmark", tasks.size());
                     tasks.get(unmarkIndex).markAsNotDone();
+                    Storage.saveTasks(tasks);
                     System.out.println("OK, I've marked this task as not done yet:");
                     System.out.println("  " + tasks.get(unmarkIndex));
                     break;
                 case DELETE:
                     int deleteIndex = getTaskIndex(command, "delete", tasks.size());
                     Task deletedTask = tasks.remove(deleteIndex);
+                    Storage.saveTasks(tasks);
                     System.out.println("Noted. I've removed this task:");
                     System.out.println("  " + deletedTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -64,6 +67,7 @@ public class Panda {
                 case EVENT:
                     Task task = createTask(command);
                     tasks.add(task);
+                    Storage.saveTasks(tasks);
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + task);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");

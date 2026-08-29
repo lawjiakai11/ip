@@ -12,4 +12,14 @@ public class Event extends Task {
     public String toString() {
         return super.toString() + " (from: " + from + " to: " + to + ")";
     }
+
+    /**
+     * Returns this event in the save-file format.
+     *
+     * @return one line of event data
+     */
+    @Override
+    public String toFileString() {
+        return super.toFileString() + " | " + from + " | " + to;
+    }
 }

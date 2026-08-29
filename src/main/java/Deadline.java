@@ -10,4 +10,14 @@ public class Deadline extends Task {
     public String toString() {
         return super.toString() + " (by: " + by + ")";
     }
+
+    /**
+     * Returns this deadline in the save-file format.
+     *
+     * @return one line of deadline data
+     */
+    @Override
+    public String toFileString() {
+        return super.toFileString() + " | " + by;
+    }
 }

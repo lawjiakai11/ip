@@ -1,3 +1,6 @@
+/**
+ * Represents a task in Panda's task list.
+ */
 public class Task {
     protected String description;
     protected TaskType type;
@@ -32,5 +35,15 @@ public class Task {
 
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Returns this task in the simple format used by the save file.
+     *
+     * @return one line of task data
+     */
+    public String toFileString() {
+        return type.getIcon() + " | " + (status == TaskStatus.DONE ? "1" : "0")
+                + " | " + description;
     }
 }
