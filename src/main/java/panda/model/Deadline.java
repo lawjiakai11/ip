@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import panda.util.DateTimeUtil;
 
+/**
+ * Represents a task that must be completed by a specified date/time.
+ */
 public class Deadline extends Task {
     protected LocalDateTime by;
 

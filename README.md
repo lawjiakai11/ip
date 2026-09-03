@@ -13,9 +13,29 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    1. If there are any further prompts, accept the defaults.
 1. Configure the project to use **JDK 25** (not other versions) as explained in [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).<br>
    In the same dialog, set the **Project language level** field to the `SDK default` option.
-1. After that, locate the `src/main/java/panda/app/Launcher.java` file, right-click it, and choose `Run Launcher.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, a JavaFX window displaying `Hello World!` should appear.
+1. After that, locate the `src/main/java/panda/app/Launcher.java` file, right-click it, and choose `Run Launcher.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, a JavaFX window for Panda should appear.
 
 To run the original console chatbot directly, run `panda.app.Panda.main()` instead.
+
+## Checkstyle
+
+Checkstyle is a static analysis tool that checks Java source code against a configured set of style rules. This project uses the SE-EDU-aligned configuration in `config/checkstyle/` to automatically check naming, imports, indentation, braces, whitespace, line length, and Javadoc.
+
+The SE-EDU coding-standard skill remains useful because it guides code while it is being written and covers conventions that are difficult to enforce automatically. Checkstyle complements it by providing a repeatable, objective build check. They serve different purposes, so this project uses both rather than choosing only one.
+
+Run Checkstyle manually from the project root with:
+
+```bash
+./gradlew checkstyleMain checkstyleTest
+```
+
+To run Checkstyle together with the other verification tasks, use:
+
+```bash
+./gradlew check
+```
+
+HTML reports are written to `build/reports/checkstyle/main.html` and `build/reports/checkstyle/test.html`.
 
 The console chatbot output looks like this:
    ```

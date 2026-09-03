@@ -70,7 +70,7 @@ class TaskListTest {
     }
 
     @Test
-    void find_keyword_noMatches_returnsEmptyList() {
+    void find_noMatches_returnsEmptyList() {
         TaskList taskList = new TaskList(List.of(new Todo("read book")));
 
         List<Task> matches = taskList.find("grocery");

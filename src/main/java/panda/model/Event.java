@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import panda.util.DateTimeUtil;
 
+/**
+ * Represents a task that takes place during a specified time interval.
+ */
 public class Event extends Task {
     protected LocalDateTime from;
     protected LocalDateTime to;
