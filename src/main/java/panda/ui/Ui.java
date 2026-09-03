@@ -13,11 +13,7 @@ public class Ui {
 
     /** Displays Panda's welcome message. */
     public void showWelcome() {
-        System.out.println(DIVIDER);
-        System.out.println("PANDA");
-        System.out.println("Hello! I'm Panda.");
-        System.out.println("What can I do for you?");
-        System.out.println(DIVIDER);
+        showMessages(DIVIDER, "PANDA", "Hello! I'm Panda.", "What can I do for you?", DIVIDER);
     }
 
     /** Displays the divider used between chatbot turns. */
@@ -27,14 +23,8 @@ public class Ui {
 
     /** Displays Panda's goodbye illustration and message. */
     public void showBye() {
-        System.out.println("    ( ) ( ) ( )");
-        System.out.println("      \\ | /");
-        System.out.println("       \\|/");
-        System.out.println("     .-----.");
-        System.out.println("    /       \\");
-        System.out.println("   |   o o   |");
-        System.out.println("    \\_______/");
-        System.out.println("Bye. Hope to see you again soon!");
+        showMessages("    ( ) ( ) ( )", "      \\ | /", "       \\|/", "     .-----.",
+            "    /       \\", "   |   o o   |", "    \\_______/", "Bye. Hope to see you again soon!");
         showDivider();
     }
 
@@ -83,5 +73,11 @@ public class Ui {
     /** Displays a Panda-style command error. */
     public void showError(PandaException exception) {
         System.out.println(exception.getMessage());
+    }
+
+    private void showMessages(String... messages) {
+        for (String message : messages) {
+            System.out.println(message);
+        }
     }
 }
