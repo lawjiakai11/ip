@@ -44,7 +44,10 @@ public class PandaService {
                         + updateTask(command, "unmark", false);
             case DELETE:
                 int deleteIndex = Parser.getTaskIndex(command, "delete", tasks.size());
+                int taskCountBeforeDeletion = tasks.size();
                 Task deletedTask = tasks.remove(deleteIndex);
+                assert tasks.size() == taskCountBeforeDeletion - 1
+                        : "Removing one task must reduce the task count by one";
                 Storage.saveTasks(tasks.asList());
                 return "Noted. I've removed this task:\n  " + deletedTask
                         + "\nNow you have " + tasks.size() + " tasks in the list.";
@@ -58,7 +61,10 @@ public class PandaService {
             case DEADLINE:
             case EVENT:
                 Task task = Parser.createTask(command);
+                int taskCountBeforeAddition = tasks.size();
                 tasks.add(task);
+                assert tasks.size() == taskCountBeforeAddition + 1
+                        : "Adding one task must increase the task count by one";
                 Storage.saveTasks(tasks.asList());
                 return "Got it. I've added this task:\n  " + task
                         + "\nNow you have " + tasks.size() + " tasks in the list.";
@@ -76,6 +82,10 @@ public class PandaService {
     private Task updateTask(String command, String action, boolean markDone) throws PandaException {
         int index = Parser.getTaskIndex(command, action, tasks.size());
         Task task = markDone ? tasks.markTask(index) : tasks.unmarkTask(index);
+        String expectedStatusIcon = markDone ? "X" : " ";
+        assert task == tasks.get(index) : "Updating a task must return the task stored at the requested index";
+        assert task.getStatusIcon().equals(expectedStatusIcon)
+                : "Updating a task must set its requested completion status";
         Storage.saveTasks(tasks.asList());
         return task;
     }

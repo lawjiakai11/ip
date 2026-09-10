@@ -114,6 +114,8 @@ public class Parser {
             if (eventEnd.isBefore(eventStart)) {
                 throw new PandaException(ErrorType.EVENT_END_BEFORE_START);
             }
+            assert !eventEnd.isBefore(eventStart)
+                    : "An event's end date/time must not precede its start date/time";
             return new Event(eventDescription, eventStart, eventEnd);
         default:
             throw new PandaException(ErrorType.UNKNOWN_COMMAND);
@@ -160,6 +162,8 @@ public class Parser {
         if (taskIndex < 0 || taskIndex >= taskCount) {
             throw new PandaException(ErrorType.TASK_NOT_FOUND);
         }
+        assert taskIndex >= 0 && taskIndex < taskCount
+                : "A validated task index must identify an existing task";
         return taskIndex;
     }
 
