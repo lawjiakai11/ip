@@ -13,8 +13,4 @@ public class Todo extends Task {
         super(description, TaskType.TODO);
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
 }

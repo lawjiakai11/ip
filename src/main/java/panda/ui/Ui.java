@@ -1,10 +1,5 @@
 package panda.ui;
 
-import java.util.List;
-
-import panda.exception.PandaException;
-import panda.model.Task;
-
 /**
  * Handles Panda's console input/output presentation.
  */
@@ -26,53 +21,6 @@ public class Ui {
         showMessages("    ( ) ( ) ( )", "      \\ | /", "       \\|/", "     .-----.",
             "    /       \\", "   |   o o   |", "    \\_______/", "Bye. Hope to see you again soon!");
         showDivider();
-    }
-
-    /** Displays all tasks with their one-based list positions. */
-    public void showTaskList(List<Task> tasks) {
-        System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + "." + tasks.get(i));
-        }
-    }
-
-    /** Displays confirmation for a newly added task. */
-    public void showTaskAdded(Task task, int taskCount) {
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
-    }
-
-    /** Displays confirmation for marking a task done. */
-    public void showTaskMarked(Task task) {
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + task);
-    }
-
-    /** Displays confirmation for marking a task not done. */
-    public void showTaskUnmarked(Task task) {
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + task);
-    }
-
-    /** Displays confirmation for deleting a task. */
-    public void showTaskDeleted(Task task, int taskCount) {
-        System.out.println("Noted. I've removed this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
-    }
-
-    /** Displays the tasks that match a search keyword. */
-    public void showMatchingTasks(List<Task> tasks) {
-        System.out.println("Here are the matching tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + "." + tasks.get(i));
-        }
-    }
-
-    /** Displays a Panda-style command error. */
-    public void showError(PandaException exception) {
-        System.out.println(exception.getMessage());
     }
 
     private void showMessages(String... messages) {
