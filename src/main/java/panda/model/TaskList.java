@@ -3,6 +3,7 @@ package panda.model;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Encapsulates Panda's task collection and the basic operations performed on it.
@@ -71,14 +72,10 @@ public class TaskList {
      * @return the matching tasks in their current order
      */
     public ArrayList<Task> find(String keyword) {
-        ArrayList<Task> matches = new ArrayList<>();
         String searchTerm = keyword.toLowerCase();
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(searchTerm)) {
-                matches.add(task);
-            }
-        }
-        return matches;
+        return tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(searchTerm))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -90,23 +87,18 @@ public class TaskList {
      * @return a sorted copy of the tasks
      */
     public ArrayList<Task> sortDeadlinesByDate(List<Task> taskList, SortDirection direction) {
-        ArrayList<Task> deadlines = new ArrayList<>();
-        ArrayList<Task> nonDeadlines = new ArrayList<>();
-        for (Task task : taskList) {
-            if (task instanceof Deadline) {
-                deadlines.add(task);
-            } else {
-                nonDeadlines.add(task);
-            }
-        }
-
         Comparator<Task> deadlineComparator = Comparator.comparing(task -> ((Deadline) task).getBy());
         if (direction == SortDirection.DESCENDING) {
             deadlineComparator = deadlineComparator.reversed();
         }
-        deadlines.sort(deadlineComparator);
-        deadlines.addAll(nonDeadlines);
-        return deadlines;
+        ArrayList<Task> sortedTasks = taskList.stream()
+                .filter(Deadline.class::isInstance)
+                .sorted(deadlineComparator)
+                .collect(Collectors.toCollection(ArrayList::new));
+        taskList.stream()
+                .filter(task -> !(task instanceof Deadline))
+                .forEach(sortedTasks::add);
+        return sortedTasks;
     }
 
     /**
