@@ -4,9 +4,9 @@ package panda.model;
  * Represents a task in Panda's task list.
  */
 public class Task {
-    protected String description;
-    protected TaskType type;
-    protected TaskStatus status;
+    private final String description;
+    private final TaskType type;
+    private TaskStatus status;
 
     public Task(String description) {
         this(description, TaskType.TODO);
