@@ -17,7 +17,7 @@ public class MainWindow {
     @FXML
     private TextField userInput;
 
-    private final PandaService panda = new PandaService();
+    private final PandaService pandaService = new PandaService();
     private final Image poImage = loadAvatar("/images/po-avatar.png");
     private final Image platypusImage = loadAvatar("/images/platypus-avatar.png");
 
@@ -36,7 +36,7 @@ public class MainWindow {
             return;
         }
         dialogContainer.getChildren().add(new DialogBox(input, platypusImage, false));
-        String response = panda.getResponse(input);
+        String response = pandaService.getResponse(input);
         if (response.equals(PandaService.BYE_RESPONSE)) {
             addPandaDialog("Bye. Hope to see you again soon!");
             userInput.setDisable(true);

@@ -8,7 +8,7 @@ import panda.util.DateTimeUtil;
  * Represents a task that must be completed by a specified date/time.
  */
 public class Deadline extends Task {
-    protected LocalDateTime by;
+    private final LocalDateTime by;
 
     /**
      * Creates a deadline task with a parsed date/time value.

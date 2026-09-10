@@ -8,8 +8,8 @@ import panda.util.DateTimeUtil;
  * Represents a task that takes place during a specified time interval.
  */
 public class Event extends Task {
-    protected LocalDateTime from;
-    protected LocalDateTime to;
+    private final LocalDateTime from;
+    private final LocalDateTime to;
 
     /**
      * Creates an event task with explicit start and end times.
