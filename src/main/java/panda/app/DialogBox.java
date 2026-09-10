@@ -11,6 +11,8 @@ import javafx.scene.shape.Circle;
  * Represents one user or Panda message in the chat history.
  */
 public class DialogBox extends HBox {
+    private static final double AVATAR_SIZE = 58;
+
     /**
      * Creates a styled message bubble.
      *
@@ -23,11 +25,10 @@ public class DialogBox extends HBox {
         label.setMaxWidth(Double.MAX_VALUE);
         label.getStyleClass().add(fromPanda ? "panda-bubble" : "user-bubble");
         ImageView avatarView = new ImageView(avatar);
-        double avatarSize = 58;
-        avatarView.setFitWidth(avatarSize);
-        avatarView.setFitHeight(avatarSize);
+        avatarView.setFitWidth(AVATAR_SIZE);
+        avatarView.setFitHeight(AVATAR_SIZE);
         avatarView.setPreserveRatio(true);
-        avatarView.setClip(new Circle(avatarSize / 2, avatarSize / 2, avatarSize / 2));
+        avatarView.setClip(new Circle(AVATAR_SIZE / 2, AVATAR_SIZE / 2, AVATAR_SIZE / 2));
         avatarView.getStyleClass().add("avatar");
         setAlignment(fromPanda ? Pos.TOP_LEFT : Pos.TOP_RIGHT);
         getStyleClass().add(fromPanda ? "panda-dialog" : "user-dialog");
