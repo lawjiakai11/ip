@@ -4,6 +4,16 @@ The runner executes each test case in a fresh `Panda` process. The `Input` block
 contains one command per line. The `Expected output` block contains the
 program's stdout only; terminal echo of typed commands is not included.
 
+## Manual GUI verification: Deadline date sorting
+
+The command-line runner cannot operate JavaFX controls. Before release, manually verify the
+**Sort deadlines by date** checkbox and direction button in the GUI with todos, events, and at
+least two deadlines. Confirm that ascending and descending order only rearrange deadlines,
+todos/events retain their shared insertion order after them, equal deadline dates remain stable,
+and unchecking restores insertion order. Confirm that `list`, `find`, `mark`, `unmark`, and
+`delete` use the active displayed order while sorting is enabled. Also verify the empty-list
+message and that sorting resets to unchecked/ascending after restarting Panda.
+
 ## Test Case 1: Add and list a todo
 
 - Aim: Verify that a todo is stored and displayed with the todo type and incomplete status.

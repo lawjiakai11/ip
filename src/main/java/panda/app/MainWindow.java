@@ -1,6 +1,8 @@
 package panda.app;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -16,6 +18,10 @@ public class MainWindow {
     private VBox dialogContainer;
     @FXML
     private TextField userInput;
+    @FXML
+    private CheckBox sortByDateCheckBox;
+    @FXML
+    private Button sortDirectionButton;
 
     private final PandaService pandaService = new PandaService();
     private final Image poImage = loadAvatar("/images/po-avatar.png");
@@ -25,6 +31,7 @@ public class MainWindow {
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        sortDirectionButton.setDisable(true);
         addPandaDialog("Hello! I'm Panda.\nWhat can I do for you?");
     }
 
@@ -44,6 +51,21 @@ public class MainWindow {
             addPandaDialog(response);
         }
         userInput.clear();
+    }
+
+    /** Updates the task display after the date-sorting checkbox changes. */
+    @FXML
+    private void handleDateSorting() {
+        boolean isSortingEnabled = sortByDateCheckBox.isSelected();
+        sortDirectionButton.setDisable(!isSortingEnabled);
+        addPandaDialog(pandaService.setDateSortingEnabled(isSortingEnabled));
+    }
+
+    /** Reverses the selected date-sorting direction and displays the updated task order. */
+    @FXML
+    private void handleSortDirection() {
+        addPandaDialog(pandaService.toggleDateSortDirection());
+        sortDirectionButton.setText(pandaService.getSortDirection().getDisplayName());
     }
 
     private void addPandaDialog(String response) {

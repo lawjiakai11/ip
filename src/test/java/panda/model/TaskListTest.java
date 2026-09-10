@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -76,6 +77,36 @@ class TaskListTest {
         List<Task> matches = taskList.find("grocery");
 
         assertEquals(0, matches.size());
+    }
+
+    @Test
+    void sortDeadlinesByDate_ascendingOrdersDeadlinesAndPreservesOtherTaskOrder() {
+        Todo firstTodo = new Todo("read book");
+        Event event = new Event("team meeting",
+                LocalDateTime.of(2026, 10, 20, 9, 0),
+                LocalDateTime.of(2026, 10, 20, 10, 0));
+        Deadline laterDeadline = new Deadline("submit report", LocalDateTime.of(2026, 10, 22, 12, 0));
+        Todo secondTodo = new Todo("buy milk");
+        Deadline earlierDeadline = new Deadline("return book", LocalDateTime.of(2026, 10, 21, 12, 0));
+        TaskList taskList = new TaskList(List.of(firstTodo, event, laterDeadline, secondTodo, earlierDeadline));
+
+        List<Task> sortedTasks = taskList.sortDeadlinesByDate(taskList.asList(), SortDirection.ASCENDING);
+
+        assertEquals(List.of(earlierDeadline, laterDeadline, firstTodo, event, secondTodo), sortedTasks);
+        assertEquals(List.of(firstTodo, event, laterDeadline, secondTodo, earlierDeadline), taskList.asList());
+    }
+
+    @Test
+    void sortDeadlinesByDate_descendingPreservesEqualDeadlineOrder() {
+        Deadline firstSameDateDeadline = new Deadline("first", LocalDateTime.of(2026, 10, 21, 12, 0));
+        Deadline laterDeadline = new Deadline("later", LocalDateTime.of(2026, 10, 22, 12, 0));
+        Deadline secondSameDateDeadline = new Deadline("second", LocalDateTime.of(2026, 10, 21, 12, 0));
+        Todo todo = new Todo("read book");
+        TaskList taskList = new TaskList(List.of(firstSameDateDeadline, laterDeadline, secondSameDateDeadline, todo));
+
+        List<Task> sortedTasks = taskList.sortDeadlinesByDate(taskList.asList(), SortDirection.DESCENDING);
+
+        assertEquals(List.of(laterDeadline, firstSameDateDeadline, secondSameDateDeadline, todo), sortedTasks);
     }
 
     @Test

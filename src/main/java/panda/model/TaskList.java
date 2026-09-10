@@ -1,6 +1,7 @@
 package panda.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -78,6 +79,34 @@ public class TaskList {
             }
         }
         return matches;
+    }
+
+    /**
+     * Returns a copy of the given tasks with deadlines first, ordered by their due date/time.
+     * Non-deadline tasks retain their original relative order after the deadlines.
+     *
+     * @param taskList tasks to order
+     * @param direction date ordering direction
+     * @return a sorted copy of the tasks
+     */
+    public ArrayList<Task> sortDeadlinesByDate(List<Task> taskList, SortDirection direction) {
+        ArrayList<Task> deadlines = new ArrayList<>();
+        ArrayList<Task> nonDeadlines = new ArrayList<>();
+        for (Task task : taskList) {
+            if (task instanceof Deadline) {
+                deadlines.add(task);
+            } else {
+                nonDeadlines.add(task);
+            }
+        }
+
+        Comparator<Task> deadlineComparator = Comparator.comparing(task -> ((Deadline) task).getBy());
+        if (direction == SortDirection.DESCENDING) {
+            deadlineComparator = deadlineComparator.reversed();
+        }
+        deadlines.sort(deadlineComparator);
+        deadlines.addAll(nonDeadlines);
+        return deadlines;
     }
 
     /**
