@@ -1,6 +1,13 @@
-# Panda project template
+# Panda
 
-This is a project template for a greenfield Java project. It's the starting point for the Panda chatbot. Given below are instructions on how to use it.
+Panda is a desktop chatbot for managing todos, deadlines, and events.
+
+## User Guide
+
+Read the product website and complete user guide at
+[lawjiakai11.github.io/ip](https://lawjiakai11.github.io/ip/).
+
+The guide explains Panda's commands, date formats, sorting controls, automatic saving, and error handling.
 
 ## Setting up in Intellij
 
@@ -36,72 +43,6 @@ To run Checkstyle together with the other verification tasks, use:
 ```
 
 HTML reports are written to `build/reports/checkstyle/main.html` and `build/reports/checkstyle/test.html`.
-
-The console chatbot output looks like this:
-   ```
-   ____________________________________________________________
-   PANDA
-   Hello! I'm Panda.
-   What can I do for you?
-   ____________________________________________________________
-   todo read book
-   ____________________________________________________________
-   Got it. I've added this task:
-     [T][ ] read book
-   Now you have 1 tasks in the list.
-   ____________________________________________________________
-   deadline return book /by June 6th
-   ____________________________________________________________
-   Got it. I've added this task:
-     [D][ ] return book (by: June 6th)
-   Now you have 2 tasks in the list.
-   ____________________________________________________________
-   event project meeting /from Aug 6th 2pm /to 4pm
-   ____________________________________________________________
-   Got it. I've added this task:
-     [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
-   Now you have 3 tasks in the list.
-   ____________________________________________________________
-   list
-   ____________________________________________________________
-   Here are the tasks in your list:
-   1.[T][ ] read book
-   2.[D][ ] return book (by: June 6th)
-   3.[E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
-   ____________________________________________________________
-   mark 2
-   ____________________________________________________________
-   Nice! I've marked this task as done:
-     [D][X] return book (by: June 6th)
-   ____________________________________________________________
-   unmark 2
-   ____________________________________________________________
-   OK, I've marked this task as not done yet:
-     [D][ ] return book (by: June 6th)
-   ____________________________________________________________
-   unmark 2
-   ____________________________________________________________
-   OK, I've marked this task as not done yet:
-     [ ] return book
-   ____________________________________________________________
-   list
-   ____________________________________________________________
-   Here are the tasks in your list:
-   1.[ ] read book
-   2.[ ] return book
-   ____________________________________________________________
-   bye
-   ____________________________________________________________
-       ( ) ( ) ( )
-         \ | /
-          \|/
-        .-----.
-       /       \
-      |   o o   |
-       \_______/
-   Bye. Hope to see you again soon!
-   ____________________________________________________________
-   ```
 
 ## Building and running the fat JAR
 
