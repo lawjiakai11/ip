@@ -54,6 +54,11 @@ public class Event extends Task {
     }
 
     @Override
+    public boolean hasSameDetails(Task other) {
+        return super.hasSameDetails(other) && from.equals(((Event) other).from) && to.equals(((Event) other).to);
+    }
+
+    @Override
     public String toString() {
         return super.toString() + " (from: " + DateTimeUtil.formatForDisplay(from)
                 + " to: " + DateTimeUtil.formatForDisplay(to) + ")";

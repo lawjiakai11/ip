@@ -33,12 +33,15 @@ public class MainWindow {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
         sortDirectionButton.setDisable(true);
         addPandaDialog("Hello! I'm Panda.\nWhat can I do for you?");
+        if (pandaService.getStartupWarning() != null) {
+            addPandaDialog(pandaService.getStartupWarning());
+        }
     }
 
     /** Sends the current text to Panda when Enter or Send is pressed. */
     @FXML
     private void handleUserInput() {
-        String input = userInput.getText().trim();
+        String input = userInput.getText();
         if (input.isEmpty()) {
             return;
         }

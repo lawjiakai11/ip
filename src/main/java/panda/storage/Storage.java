@@ -1,8 +1,10 @@
 package panda.storage;
 
 import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +30,22 @@ public class Storage {
             taskLines.add(task.toFileString());
         }
 
+        Path temporaryFile = null;
         try {
             Files.createDirectories(SAVE_FILE.getParent());
-            Files.write(SAVE_FILE, taskLines);
+            temporaryFile = Files.createTempFile(SAVE_FILE.getParent(), "panda-", ".tmp");
+            Files.write(temporaryFile, taskLines);
+            moveIntoPlace(temporaryFile);
         } catch (IOException e) {
             throw new RuntimeException("Unable to save tasks to " + SAVE_FILE, e);
+        } finally {
+            if (temporaryFile != null) {
+                try {
+                    Files.deleteIfExists(temporaryFile);
+                } catch (IOException ignored) {
+                    // A future save can safely replace an abandoned temporary file.
+                }
+            }
         }
     }
 
@@ -105,5 +118,20 @@ public class Storage {
             throw new IllegalArgumentException("Malformed task status");
         }
         return task;
+    }
+
+    /**
+     * Replaces the save file after the complete replacement has been written.
+     *
+     * @param temporaryFile completed temporary save file
+     * @throws IOException if the file cannot be moved into place
+     */
+    private static void moveIntoPlace(Path temporaryFile) throws IOException {
+        try {
+            Files.move(temporaryFile, SAVE_FILE, StandardCopyOption.ATOMIC_MOVE,
+                    StandardCopyOption.REPLACE_EXISTING);
+        } catch (AtomicMoveNotSupportedException e) {
+            Files.move(temporaryFile, SAVE_FILE, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 }

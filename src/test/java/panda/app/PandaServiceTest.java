@@ -126,4 +126,33 @@ class PandaServiceTest {
 
         assertEquals("There are no tasks to sort.", service.setDateSortingEnabled(true));
     }
+
+    @Test
+    void getResponse_invalidCommandsAndDuplicateTasks_returnsHelpfulErrorsWithoutChangingTasks() {
+        PandaService service = new PandaService(new TaskList());
+
+        assertEquals("OOPS!!! Commands must not have leading/trailing spaces or repeated whitespace.",
+                service.getResponse(" todo read book"));
+        assertEquals("OOPS!!! Commands must not have leading/trailing spaces or repeated whitespace.",
+                service.getResponse("todo  read book"));
+        assertEquals("OOPS!!! Task descriptions cannot contain '|', which is reserved for saved data.",
+                service.getResponse("todo read | book"));
+        assertEquals("Got it. I've added this task:\n  [T][ ] read book\nNow you have 1 tasks in the list.",
+                service.getResponse("todo read book"));
+        assertEquals("OOPS!!! An identical task is already in the list.", service.getResponse("todo read book"));
+        assertEquals("Here are the tasks in your list:\n1.[T][ ] read book", service.getResponse("list"));
+    }
+
+    @Test
+    void getResponse_invalidEventParametersAndEqualTimes_returnsHelpfulErrors() {
+        PandaService service = new PandaService(new TaskList());
+
+        assertEquals("OOPS!!! The /from parameter can only be specified once.",
+                service.getResponse("event meeting /from 2026-10-20 0900 /from 2026-10-20 1000 /to 2026-10-20 1100"));
+        assertEquals("OOPS!!! The /by parameter is not valid for this command.",
+                service.getResponse("event meeting /from 2026-10-20 0900 /to 2026-10-20 1100 /by tomorrow"));
+        assertEquals("OOPS!!! An event's end date/time must be after its start date/time.",
+                service.getResponse("event meeting /from 2026-10-20 0900 /to 2026-10-20 0900"));
+        assertEquals("Here are the tasks in your list:", service.getResponse("list"));
+    }
 }

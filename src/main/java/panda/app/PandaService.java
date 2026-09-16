@@ -23,12 +23,25 @@ public class PandaService {
 
     private final TaskList tasks;
     private final boolean shouldSaveTasks;
+    private final String startupWarning;
     private boolean isDateSortingEnabled;
     private SortDirection sortDirection;
 
     /** Creates a service with tasks loaded from storage. */
     public PandaService() {
-        this(new TaskList(Storage.loadTasks()), true);
+        TaskList loadedTasks;
+        String loadWarning = null;
+        try {
+            loadedTasks = new TaskList(Storage.loadTasks());
+        } catch (RuntimeException e) {
+            loadedTasks = new TaskList();
+            loadWarning = ErrorType.STORAGE_LOAD_FAILED.getMessage();
+        }
+        this.tasks = loadedTasks;
+        this.shouldSaveTasks = true;
+        this.startupWarning = loadWarning;
+        isDateSortingEnabled = false;
+        sortDirection = SortDirection.ASCENDING;
     }
 
     PandaService(TaskList tasks) {
@@ -38,6 +51,7 @@ public class PandaService {
     private PandaService(TaskList tasks, boolean shouldSaveTasks) {
         this.tasks = tasks;
         this.shouldSaveTasks = shouldSaveTasks;
+        this.startupWarning = null;
         isDateSortingEnabled = false;
         sortDirection = SortDirection.ASCENDING;
     }
@@ -49,8 +63,9 @@ public class PandaService {
      * @return Panda's response
      */
     public String getResponse(String command) {
-        CommandType commandType = Parser.getCommandType(command);
         try {
+            Parser.validateCommandFormat(command);
+            CommandType commandType = Parser.getCommandType(command);
             switch (commandType) {
             case LIST:
                 return getTaskListResponse();
@@ -80,6 +95,9 @@ public class PandaService {
             case DEADLINE:
             case EVENT:
                 Task task = Parser.createTask(command);
+                if (tasks.containsEquivalent(task)) {
+                    throw new PandaException(ErrorType.DUPLICATE_TASK);
+                }
                 int taskCountBeforeAddition = tasks.size();
                 tasks.add(task);
                 assert tasks.size() == taskCountBeforeAddition + 1
@@ -95,6 +113,15 @@ public class PandaService {
         } catch (PandaException e) {
             return e.getMessage();
         }
+    }
+
+    /**
+     * Returns a warning generated while loading saved tasks, if any.
+     *
+     * @return the startup warning, or {@code null} when loading succeeded
+     */
+    public String getStartupWarning() {
+        return startupWarning;
     }
 
     private Task updateTask(String command, String action, boolean markDone) throws PandaException {
@@ -166,9 +193,13 @@ public class PandaService {
         return displayedTasks.get(displayedIndex);
     }
 
-    private void saveTasks() {
+    private void saveTasks() throws PandaException {
         if (shouldSaveTasks) {
-            Storage.saveTasks(tasks.asList());
+            try {
+                Storage.saveTasks(tasks.asList());
+            } catch (RuntimeException e) {
+                throw new PandaException(ErrorType.STORAGE_SAVE_FAILED);
+            }
         }
     }
 

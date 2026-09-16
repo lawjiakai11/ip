@@ -321,7 +321,7 @@ ____________________________________________________________
 Here are the tasks in your list:
 ____________________________________________________________
 ____________________________________________________________
-OOPS!!! The description of a todo cannot be empty.
+OOPS!!! Commands must not have leading/trailing spaces or repeated whitespace.
 ____________________________________________________________
 ____________________________________________________________
 OOPS!!! I'm sorry, but I don't know what that means :-(
@@ -693,10 +693,75 @@ ____________________________________________________________
 OOPS!!! Please enter a valid date/time, such as 2019-10-15 or 2/12/2019 1800.
 ____________________________________________________________
 ____________________________________________________________
-OOPS!!! An event's end date/time cannot be before its start date/time.
+OOPS!!! An event's end date/time must be after its start date/time.
 ____________________________________________________________
 ____________________________________________________________
 Here are the tasks in your list:
+____________________________________________________________
+____________________________________________________________
+    ( ) ( ) ( )
+      \ | /
+       \|/
+     .-----.
+    /       \
+   |   o o   |
+    \_______/
+Bye. Hope to see you again soon!
+____________________________________________________________
+```
+
+## Test Case 11: Reject malformed syntax and duplicate tasks
+
+- Aim: Verify command whitespace, reserved storage characters, repeated parameters, equal event times, and duplicate tasks are rejected without changing the list.
+
+### Input
+
+```text
+ todo read book
+todo  read book
+todo read | book
+todo read book
+todo read book
+deadline report /by 2026-10-20 /by 2026-10-21
+event meeting /from 2026-10-20 0900 /to 2026-10-20 0900
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+PANDA
+Hello! I'm Panda.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+OOPS!!! Commands must not have leading/trailing spaces or repeated whitespace.
+____________________________________________________________
+____________________________________________________________
+OOPS!!! Commands must not have leading/trailing spaces or repeated whitespace.
+____________________________________________________________
+____________________________________________________________
+OOPS!!! Task descriptions cannot contain '|', which is reserved for saved data.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task:
+  [T][ ] read book
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+OOPS!!! An identical task is already in the list.
+____________________________________________________________
+____________________________________________________________
+OOPS!!! The /by parameter can only be specified once.
+____________________________________________________________
+____________________________________________________________
+OOPS!!! An event's end date/time must be after its start date/time.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1.[T][ ] read book
 ____________________________________________________________
 ____________________________________________________________
     ( ) ( ) ( )

@@ -56,6 +56,16 @@ public class TaskList {
     }
 
     /**
+     * Returns whether a task with the same details is already stored.
+     *
+     * @param task task to check
+     * @return whether an equivalent task exists
+     */
+    public boolean containsEquivalent(Task task) {
+        return tasks.stream().anyMatch(existingTask -> existingTask.hasSameDetails(task));
+    }
+
+    /**
      * Removes and returns the task at a given position.
      *
      * @param index the zero-based task index

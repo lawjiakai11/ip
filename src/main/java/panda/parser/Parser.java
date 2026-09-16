@@ -23,6 +23,9 @@ public class Parser {
      * @return the recognized command type
      */
     public static CommandType getCommandType(String command) {
+        if (command == null) {
+            return CommandType.UNKNOWN;
+        }
         if (command.equals("todo") || command.startsWith("todo ")) {
             return CommandType.TODO;
         }
@@ -61,12 +64,17 @@ public class Parser {
      * @throws PandaException if the task data is invalid
      */
     public static Task createTask(String command) throws PandaException {
+        validateCommandFormat(command);
         switch (getCommandType(command)) {
         case TODO:
             String description = getArguments(command, "todo");
             if (description.isEmpty()) {
                 throw new PandaException(ErrorType.EMPTY_TODO_DESCRIPTION);
             }
+            validateDescription(description);
+            rejectUnexpectedParameter(description, "/by");
+            rejectUnexpectedParameter(description, "/from");
+            rejectUnexpectedParameter(description, "/to");
             return new Todo(description);
         case DEADLINE:
             String details = getArguments(command, "deadline");
@@ -78,12 +86,16 @@ public class Parser {
             if (byIndex < 0) {
                 throw new PandaException(ErrorType.MISSING_DEADLINE_BY);
             }
+            rejectDuplicateParameter(details, "/by");
+            rejectUnexpectedParameter(details, "/from");
+            rejectUnexpectedParameter(details, "/to");
 
             String deadlineDescription = details.substring(0, byIndex).trim();
             String by = details.substring(byIndex + 3).trim();
             if (deadlineDescription.isEmpty()) {
                 throw new PandaException(ErrorType.EMPTY_DEADLINE_DESCRIPTION);
             }
+            validateDescription(deadlineDescription);
             if (by.isEmpty()) {
                 throw new PandaException(ErrorType.EMPTY_DEADLINE_BY);
             }
@@ -99,6 +111,9 @@ public class Parser {
             if (fromIndex < 0 || toIndex < 0) {
                 throw new PandaException(ErrorType.MISSING_EVENT_TIMES);
             }
+            rejectDuplicateParameter(eventDetails, "/from");
+            rejectDuplicateParameter(eventDetails, "/to");
+            rejectUnexpectedParameter(eventDetails, "/by");
 
             String eventDescription = eventDetails.substring(0, fromIndex).trim();
             String from = eventDetails.substring(fromIndex + 5, toIndex).trim();
@@ -106,16 +121,17 @@ public class Parser {
             if (eventDescription.isEmpty()) {
                 throw new PandaException(ErrorType.EMPTY_EVENT_DESCRIPTION);
             }
+            validateDescription(eventDescription);
             if (from.isEmpty() || to.isEmpty()) {
                 throw new PandaException(ErrorType.EMPTY_EVENT_TIME);
             }
             LocalDateTime eventStart = parseDateTime(from);
             LocalDateTime eventEnd = parseDateTime(to);
-            if (eventEnd.isBefore(eventStart)) {
-                throw new PandaException(ErrorType.EVENT_END_BEFORE_START);
+            if (!eventEnd.isAfter(eventStart)) {
+                throw new PandaException(ErrorType.EVENT_END_NOT_AFTER_START);
             }
-            assert !eventEnd.isBefore(eventStart)
-                    : "An event's end date/time must not precede its start date/time";
+            assert eventEnd.isAfter(eventStart)
+                    : "An event's end date/time must be after its start date/time";
             return new Event(eventDescription, eventStart, eventEnd);
         default:
             throw new PandaException(ErrorType.UNKNOWN_COMMAND);
@@ -147,6 +163,7 @@ public class Parser {
      * @throws PandaException if the index is invalid
      */
     public static int getTaskIndex(String command, String action, int taskCount) throws PandaException {
+        validateCommandFormat(command);
         String taskNumber = getArguments(command, action);
         if (taskNumber.isEmpty()) {
             throw new PandaException(ErrorType.MISSING_TASK_NUMBER, action);
@@ -176,6 +193,50 @@ public class Parser {
      */
     public static String getArguments(String command, String name) {
         return command.length() == name.length() ? "" : command.substring(name.length()).trim();
+    }
+
+    /**
+     * Rejects empty commands and command lines that do not use single-space separation.
+     *
+     * @param command raw user input
+     * @throws PandaException if the command format is invalid
+     */
+    public static void validateCommandFormat(String command) throws PandaException {
+        if (command == null || command.isEmpty()) {
+            throw new PandaException(ErrorType.EMPTY_COMMAND);
+        }
+        if (!command.equals(command.trim()) || command.matches(".* {2,}.*")
+                || command.matches(".*[\\t\\n\\x0B\\f\\r].*")) {
+            throw new PandaException(ErrorType.INVALID_COMMAND_FORMAT);
+        }
+    }
+
+    private static void validateDescription(String description) throws PandaException {
+        if (description.contains("|")) {
+            throw new PandaException(ErrorType.INVALID_DESCRIPTION);
+        }
+    }
+
+    private static void rejectDuplicateParameter(String text, String parameter) throws PandaException {
+        if (countMarker(text, parameter) > 1) {
+            throw new PandaException(ErrorType.DUPLICATE_PARAMETER, parameter);
+        }
+    }
+
+    private static void rejectUnexpectedParameter(String text, String parameter) throws PandaException {
+        if (findMarker(text, parameter) >= 0) {
+            throw new PandaException(ErrorType.UNEXPECTED_PARAMETER, parameter);
+        }
+    }
+
+    private static int countMarker(String text, String marker) {
+        int count = 0;
+        int index = findMarker(text, marker);
+        while (index >= 0) {
+            count++;
+            index = findMarker(text, marker, index + marker.length());
+        }
+        return count;
     }
 
     /**

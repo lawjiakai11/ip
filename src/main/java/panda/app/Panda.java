@@ -18,9 +18,14 @@ public class Panda {
         ui.showWelcome();
 
         PandaService service = new PandaService();
+        if (service.getStartupWarning() != null) {
+            ui.showDivider();
+            System.out.println(service.getStartupWarning());
+            ui.showDivider();
+        }
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
-            String command = scanner.nextLine().trim();
+            String command = scanner.nextLine();
             ui.showDivider();
 
             String response = service.getResponse(command);

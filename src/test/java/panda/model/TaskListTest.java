@@ -57,6 +57,26 @@ class TaskListTest {
     }
 
     @Test
+    void containsEquivalent_sameTodoDetails_returnsTrueRegardlessOfStatus() {
+        Todo existingTask = new Todo("buy groceries");
+        existingTask.markAsDone();
+        TaskList taskList = new TaskList(List.of(existingTask));
+
+        assertEquals(true, taskList.containsEquivalent(new Todo("buy groceries")));
+    }
+
+    @Test
+    void containsEquivalent_differentEventTime_returnsFalse() {
+        Event existingEvent = new Event("team meeting",
+                LocalDateTime.of(2026, 10, 20, 9, 0), LocalDateTime.of(2026, 10, 20, 10, 0));
+        Event differentEvent = new Event("team meeting",
+                LocalDateTime.of(2026, 10, 20, 10, 0), LocalDateTime.of(2026, 10, 20, 11, 0));
+        TaskList taskList = new TaskList(List.of(existingEvent));
+
+        assertEquals(false, taskList.containsEquivalent(differentEvent));
+    }
+
+    @Test
     void find_keyword_returnsMatchingTasksIgnoreCase() {
         Todo first = new Todo("read book");
         Deadline second = new Deadline("return book", "2019-10-20");

@@ -40,6 +40,16 @@ public class Task {
     }
 
     /**
+     * Returns whether another task has the same user-visible details, excluding completion status.
+     *
+     * @param other task to compare
+     * @return whether both tasks describe the same work
+     */
+    public boolean hasSameDetails(Task other) {
+        return other != null && type == other.type && description.equals(other.description);
+    }
+
+    /**
      * Returns this task in the simple format used by the save file.
      *
      * @return one line of task data
