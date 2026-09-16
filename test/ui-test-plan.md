@@ -14,6 +14,15 @@ and unchecking restores insertion order. Confirm that `list`, `find`, `mark`, `u
 `delete` use the active displayed order while sorting is enabled. Also verify the empty-list
 message and that sorting resets to unchecked/ascending after restarting Panda.
 
+## Manual compatibility regression checks
+
+Before release, run the application on macOS, Windows, and Linux where available. At each supported
+screen resolution, including the minimum window size, verify that the task list, error messages, and
+sort controls remain readable and usable. Repeat the GUI smoke test with English and a non-English OS
+language setting to confirm dates retain the application's English format and text controls do not clip.
+Also verify that restarting the application preserves saved tasks and that a read-only or malformed save
+file produces a clear recovery message rather than terminating the application.
+
 ## Test Case 1: Add and list a todo
 
 - Aim: Verify that a todo is stored and displayed with the todo type and incomplete status.

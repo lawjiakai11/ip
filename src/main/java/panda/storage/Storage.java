@@ -17,7 +17,8 @@ import panda.model.Todo;
  * Saves Panda's task list to a fixed file on disk.
  */
 public class Storage {
-    private static final Path SAVE_FILE = Path.of("data", "panda.txt");
+    private static final Path DEFAULT_SAVE_FILE = Path.of("data", "panda.txt");
+    private static final String SAVE_FILE_PROPERTY = "panda.save.path";
 
     /**
      * Writes the current task list to disk, creating the data directory when needed.
@@ -32,12 +33,13 @@ public class Storage {
 
         Path temporaryFile = null;
         try {
-            Files.createDirectories(SAVE_FILE.getParent());
-            temporaryFile = Files.createTempFile(SAVE_FILE.getParent(), "panda-", ".tmp");
+            Path saveFile = getSaveFile();
+            Files.createDirectories(saveFile.getParent());
+            temporaryFile = Files.createTempFile(saveFile.getParent(), "panda-", ".tmp");
             Files.write(temporaryFile, taskLines);
-            moveIntoPlace(temporaryFile);
+            moveIntoPlace(temporaryFile, saveFile);
         } catch (IOException e) {
-            throw new RuntimeException("Unable to save tasks to " + SAVE_FILE, e);
+            throw new RuntimeException("Unable to save tasks to " + getSaveFile(), e);
         } finally {
             if (temporaryFile != null) {
                 try {
@@ -57,12 +59,13 @@ public class Storage {
      */
     public static ArrayList<Task> loadTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
-        if (!Files.exists(SAVE_FILE)) {
+        Path saveFile = getSaveFile();
+        if (!Files.exists(saveFile)) {
             return tasks;
         }
 
         try {
-            for (String taskLine : Files.readAllLines(SAVE_FILE)) {
+            for (String taskLine : Files.readAllLines(saveFile)) {
                 if (!taskLine.isBlank()) {
                     try {
                         tasks.add(createTask(taskLine));
@@ -72,7 +75,7 @@ public class Storage {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Unable to load tasks from " + SAVE_FILE, e);
+            throw new RuntimeException("Unable to load tasks from " + saveFile, e);
         }
         return tasks;
     }
@@ -126,12 +129,22 @@ public class Storage {
      * @param temporaryFile completed temporary save file
      * @throws IOException if the file cannot be moved into place
      */
-    private static void moveIntoPlace(Path temporaryFile) throws IOException {
+    private static void moveIntoPlace(Path temporaryFile, Path saveFile) throws IOException {
         try {
-            Files.move(temporaryFile, SAVE_FILE, StandardCopyOption.ATOMIC_MOVE,
+            Files.move(temporaryFile, saveFile, StandardCopyOption.ATOMIC_MOVE,
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (AtomicMoveNotSupportedException e) {
-            Files.move(temporaryFile, SAVE_FILE, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(temporaryFile, saveFile, StandardCopyOption.REPLACE_EXISTING);
         }
+    }
+
+    /**
+     * Returns the save-file path, optionally overridden for isolated automated tests.
+     *
+     * @return the configured save-file path
+     */
+    private static Path getSaveFile() {
+        String configuredPath = System.getProperty(SAVE_FILE_PROPERTY);
+        return configuredPath == null ? DEFAULT_SAVE_FILE : Path.of(configuredPath);
     }
 }
